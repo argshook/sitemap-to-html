@@ -27,12 +27,7 @@ const extractUrlsFromSitemap = async sitemapPath => {
   return uniqueUrls;
 };
 
-const run = async ({
-  sitemapPath,
-  relativeSitemapPath,
-  outputPath,
-  relativeOutputPath
-}) => {
+const run = async ({ sitemapPath, relativeSitemapPath, outputPath }) => {
   log.line("Welcome to sitemap-to-html!");
   log(`Parsing ${relativeSitemapPath}`);
   log.dot();
@@ -62,7 +57,7 @@ const run = async ({
 
   log.line("Opening Puppeteer");
 
-  const { page } = await runPuppeteer();
+  const { page, browser } = await runPuppeteer();
 
   for await (const [hostname, urls] of Object.entries(urlsByHostname)) {
     log.line(`Starting to snapshot ${urls.size} pages at ${hostname} hostname`);
@@ -106,8 +101,14 @@ const run = async ({
     }
   }
 
-  log.line(`Done! Find HTMLs at ${outputPath}`);
+  log("Closing puppeteer");
+  await browser.close();
+  log.dot();
+  log.ok();
+
   log.line("Thanks, see you later!");
+  log.line();
+  log.line(`Done! Find HTMLs at ${outputPath}`);
 };
 
 const runPuppeteer = async () => {

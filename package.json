@@ -1,7 +1,7 @@
 {
   "name": "sitemap-to-html",
   "author": "Arijus Šukys <argshook@gmail.com>",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "",
   "bin": {
     "sitemap-to-html": "bin/index.js"

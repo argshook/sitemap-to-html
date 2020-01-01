@@ -1,7 +1,10 @@
 # Sitemap to HTML
 
+![](https://img.shields.io/npm/v/sitemap-to-html?style=flat)
+![](https://github.com/argshook/sitemap-to-html/workflows/Node%20CI/badge.svg)
+
 This project is a command line utility that generates HTML snapshots
-from given `sitemap.xml` file.
+for each URL from `sitemap.xml` file.
 
 Useful for pre-generating HTML files for website crawlers that do not
 run javascript.
@@ -18,7 +21,7 @@ provide a regular `sitemap.xml` file and `output` path.
 
 The tool will:
 1. visit link found in `sitemap.xml` with puppeteer
-1. wait for page to fully load (no network requests for at least 300ms)
+1. wait for page to fully load (no network requests for at least 500ms)
 1. create HTML snapshot of loaded page
 1. save it in folder provided in `--output` flag (it is `build` folder by default)
 1. goto `1`, until all links visited

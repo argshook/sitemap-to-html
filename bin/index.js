@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 if (require.main === module) {
-  require("../index.js");
+  require("../dist/index.js");
 } else {
   console.log(
     "Run with `sitemap-to-html --sitemap path/to/sitemap.xml --output path/to/htmls`"

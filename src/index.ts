@@ -1,25 +1,28 @@
-const path = require("path");
-const fs = require("fs").promises;
-const minimist = require("minimist");
-const { xml2json } = require("xml2json-light");
-const Url = require("url-parse");
-const puppeteer = require("puppeteer");
+import path from "path";
+import { promises as fs } from "fs";
+import minimist from "minimist";
+import { xml2json } from "xml2json-light";
+import Url from "url-parse";
+import puppeteer from "puppeteer";
+import { URLParse } from "./typings/url-parse";
 
 const cwd = process.cwd();
-const log = string => process.stdout.write(`${string} `);
+const log = (s: string) => process.stdout.write(`${s} `);
 log.line = console.log;
 log.dot = () => process.stdout.write(".");
 log.ok = () => process.stdout.write(" OK\n");
-log.fail = error => process.stdout.write(` ERROR\n${error}`);
+log.fail = (s: string) => process.stdout.write(` ERROR\n${s}`);
 
-const extractUrlsFromSitemap = async sitemapPath => {
+const extractUrlsFromSitemap = async (sitemapPath: string) => {
   const sitemapXml = await fs.readFile(sitemapPath, "utf8");
   const sitemapJson = xml2json(sitemapXml);
   const uniqueUrls = new Set();
 
   const urls = sitemapJson.urlset.url;
   if (Array.isArray(urls)) {
-    sitemapJson.urlset.url.forEach(({ loc }) => uniqueUrls.add(loc));
+    sitemapJson.urlset.url.forEach(({ loc }: { loc: string }) =>
+      uniqueUrls.add(loc)
+    );
   } else {
     uniqueUrls.add(urls.loc);
   }
@@ -27,7 +30,19 @@ const extractUrlsFromSitemap = async sitemapPath => {
   return uniqueUrls;
 };
 
-const run = async ({ sitemapPath, relativeSitemapPath, outputPath }) => {
+interface UrlsByHostname {
+  [hostname: string]: Set<URLParse>;
+}
+
+const run = async ({
+  sitemapPath,
+  relativeSitemapPath,
+  outputPath
+}: {
+  sitemapPath: string;
+  relativeSitemapPath: string;
+  outputPath: string;
+}) => {
   log.line("Welcome to sitemap-to-html!");
   log(`Parsing ${relativeSitemapPath}`);
   log.dot();
@@ -38,17 +53,20 @@ const run = async ({ sitemapPath, relativeSitemapPath, outputPath }) => {
 
   log(`Categorizing URLs from ${relativeSitemapPath}`);
 
-  const urlsByHostname = Array.from(urls).reduce((acc, url) => {
-    // TODO: handle failure
-    const parsedUrl = new Url(url);
-    log.dot();
+  const urlsByHostname: UrlsByHostname = Array.from(urls).reduce(
+    (acc: UrlsByHostname, url) => {
+      // TODO: handle failure
+      const parsedUrl: URLParse = new Url(url as string);
+      log.dot();
 
-    acc[parsedUrl.hostname] =
-      typeof acc[parsedUrl.hostname] === "undefined"
-        ? new Set().add(parsedUrl)
-        : acc[parsedUrl.hostname].add(parsedUrl);
-    return acc;
-  }, {});
+      acc[parsedUrl.hostname] =
+        typeof acc[parsedUrl.hostname] === "undefined"
+          ? (new Set().add(parsedUrl) as Set<URLParse>)
+          : acc[parsedUrl.hostname].add(parsedUrl);
+      return acc;
+    },
+    {}
+  );
 
   log.ok();
 
@@ -128,7 +146,6 @@ const runPuppeteer = async () => {
   await run({
     sitemapPath,
     relativeSitemapPath: sitemap,
-    outputPath,
-    relativeOutputPath: output
+    outputPath
   });
 })();

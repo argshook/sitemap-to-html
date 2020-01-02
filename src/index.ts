@@ -130,7 +130,10 @@ const run = async ({
 };
 
 const runPuppeteer = async () => {
-  const browser = await puppeteer.launch({ headless: true });
+  const browser = await puppeteer.launch({
+    headless: true,
+    args: ["--no-sandbox"]
+  });
   const page = await browser.newPage();
   return { browser, page };
 };

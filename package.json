@@ -1,7 +1,7 @@
 {
   "name": "sitemap-to-html",
   "author": "Arijus Šukys <argshook@gmail.com>",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "CLI tool to generate HTML files for each link defined in sitemap.xml",
   "bin": {
     "sitemap-to-html": "bin/index.js"

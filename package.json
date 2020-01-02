@@ -21,7 +21,6 @@
   "license": "ISC",
   "dependencies": {
     "minimist": "^1.2.0",
-    "path": "^0.12.7",
     "puppeteer": "^2.0.0",
     "url-parse": "^1.4.7",
     "xml2json-light": "^1.0.6"
